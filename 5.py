@@ -1,66 +1,45 @@
 class Solution(object):
-    def checkPalindrome(self, s, dp, i, j):
-        if dp[i][j] is None:
-            check = False
-
-            if j - i >= 2:
-                checked = self.checkPalindrome(s, dp, i + 1, j - 1)
-            else:
-                checked = True
-
-            if checked is True:
-                if s[i] == s[j]:
-                    checked = True
-                else:
-                    checked = False
-
-            dp[i][j] = checked
-
-            return checked
-        else:
-            return dp[i][j]
-
     def longestPalindrome(self, s):
         """
         :type s: str
         :rtype: str
-        """
-        length = 0
-        maxone = ""
+        """ 
 
-        if len(s) == 1:
-            return s
+        if len(s) == 0 or not s:
+            return ""
 
-        dp = []
-        sp = {}
+        p = [None] * len(s)
+        for i in range(len(s)):
+            p[i] = [0] * len(s)
+        max = 0
+        maxpos = None
 
         for i in range(len(s)):
-            dp.append(list())
-            for i in range(len(s)):
-                dp[i].append(list())
-
-        #init
-        for i in range(len(s)):
-            dp[i][i] = 1
-        for i in range(len(s)):
-            if i + 1 < len(dp[i]):
-                dp[i][i+1] = 1
-
-        for i in range(3, len(s)):
-            
+            p[i][i] = 1
+            maxpos = (i, i)
 
         for i in range(len(s)):
-            for j in range(i, len(s)):
-                if self.checkPalindrome(s, dp, i, j):
-                    nowlen = j - i + 1
-                    if nowlen >= length:
-                        length = nowlen
-                        maxone = s[i : j + 1]
+            if i + 1 < len(s):
+                if s[i] == s[i + 1]:
+                    p[i][i + 1] = 1
+                    maxpos = (i, i + 1)
 
-        return maxone
+        if len(s) < 3:
+            return s[maxpos[0] : maxpos[1] + 1]
 
+        pl = 3
 
+        while pl <= len(s):
+            for i in range(0, len(s) - pl + 1):
+                if s[i] == s[i + pl - 1] and p[i + 1][i + pl - 2] == 1:
+                    p[i][i + pl - 1] = 1
+                    max = pl
+                    maxpos = (i, i + pl - 1)
+
+            pl = pl + 1
+
+        return s[maxpos[0]:maxpos[1] + 1]
 
 slt = Solution()
 
-print(slt.longestPalindrome("gphyvqruxjmwhonjjrgumxjhfyupajxbjgthzdvrdqmdouuukeaxhjumkmmhdglqrrohydrmbvtuwstgkobyzjjtdtjroqpyusfsbjlusekghtfbdctvgmqzeybnwzlhdnhwzptgkzmujfldoiejmvxnorvbiubfflygrkedyirienybosqzrkbpcfidvkkafftgzwrcitqizelhfsruwmtrgaocjcyxdkovtdennrkmxwpdsxpxuarhgusizmwakrmhdwcgvfljhzcskclgrvvbrkesojyhofwqiwhiupujmkcvlywjtmbncurxxmpdskupyvvweuhbsnanzfioirecfxvmgcpwrpmbhmkdtckhvbxnsbcifhqwjjczfokovpqyjmbywtpaqcfjowxnmtirdsfeujyogbzjnjcmqyzciwjqxxgrxblvqbutqittroqadqlsdzihngpfpjovbkpeveidjpfjktavvwurqrgqdomiibfgqxwybcyovysydxyyymmiuwovnevzsjisdwgkcbsookbarezbhnwyqthcvzyodbcwjptvigcphawzxouixhbpezzirbhvomqhxkfdbokblqmrhhioyqubpyqhjrnwhjxsrodtblqxkhezubprqftrqcyrzwywqrgockioqdmzuqjkpmsyohtlcnesbgzqhkalwixfcgyeqdzhnnlzawrdgskurcxfbekbspupbduxqxjeczpmdvssikbivjhinaopbabrmvscthvoqqbkgekcgyrelxkwoawpbrcbszelnxlyikbulgmlwyffurimlfxurjsbzgddxbgqpcdsuutfiivjbyqzhprdqhahpgenjkbiukurvdwapuewrbehczrtswubthodv"))
+print(slt.longestPalindrome("babad"))
